@@ -2,16 +2,17 @@ package ru.job4j.chess;
 
 import ru.job4j.chess.firuges.Cell;
 import ru.job4j.chess.firuges.Figure;
+import ru.job4j.chess.firuges.exceptions.CellOccupiedException;
+import ru.job4j.chess.firuges.exceptions.FigureNotFoundException;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 /**
- * //TODO add comments.
+ * Логика движения фигур
  *
- * @author Petr Arsentev (parsentev@yandex.ru)
- * @version $Id$
- * @since 0.1
+ * @author Aleksey Stikhin
+ * @version 1.0
+ * @since 30.10.2019
  */
 public class Logic {
     private final Figure[] figures = new Figure[32];
@@ -21,11 +22,20 @@ public class Logic {
         this.figures[this.index++] = figure;
     }
 
-    public boolean move(Cell source, Cell dest) {
+    public boolean move(Cell source, Cell dest) throws IllegalStateException {
         boolean rst = false;
         int index = this.findBy(source);
-        if (index != -1) {
+        int target = this.findBy(dest);
+        if (index == -1) {
+            throw new FigureNotFoundException("Figure not found");
+        } else {
             Cell[] steps = this.figures[index].way(source, dest);
+            for (int step = 0; step < steps.length; step++) {
+                int empty = findBy(steps[step]);
+                if (empty != -1 || target != -1) {
+                    throw new CellOccupiedException("Cell occupied");
+                }
+            }
             if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
                 rst = true;
                 this.figures[index] = this.figures[index].copy(dest);
@@ -41,7 +51,7 @@ public class Logic {
         this.index = 0;
     }
 
-    private int findBy(Cell cell) {
+    public int findBy(Cell cell) {
         int rst = -1;
         for (int index = 0; index != this.figures.length; index++) {
             if (this.figures[index] != null && this.figures[index].position().equals(cell)) {

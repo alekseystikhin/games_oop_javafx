@@ -21,7 +21,7 @@ import ru.job4j.puzzle.firuges.Figure;
 import java.util.Random;
 
 public class Puzzle extends Application {
-    private static final String JOB4J = "Пазлы на www.job4j.ru";
+    private static final String JOB4J = "";
     private final int size = 5;
     private final Logic logic = new Logic(size);
 

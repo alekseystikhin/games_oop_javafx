@@ -2,11 +2,12 @@ package ru.job4j.chess.firuges.black;
 
 import ru.job4j.chess.firuges.Cell;
 import ru.job4j.chess.firuges.Figure;
+import ru.job4j.chess.firuges.exceptions.WrongMoveException;
 
 /**
- * @author Petr Arsentev (parsentev@yandex.ru)
- * @version $Id$
- * @since 0.1
+ * @author Aleksey Stikhin
+ * @version 1.0
+ * @since 30.10.2019
  */
 public class BishopBlack implements Figure {
     private final Cell position;
@@ -22,27 +23,26 @@ public class BishopBlack implements Figure {
 
     @Override
     public Cell[] way(Cell source, Cell dest) {
-        throw new IllegalStateException(
-                String.format("Could not way by diagonal from %s to %s", source, dest)
-        );
-//        if (!isDiagonal(source, dest)) {
-//            throw new IllegalStateException(
-//                    String.format("Could not way by diagonal from %s to %s", source, dest)
-//            );
-//        }
-//        int size = ...;
-//        Cell[] steps = new Cell[size];
-//        int deltaX = ...;
-//        int deltaY = ...;
-//        for (int index = 0; index < size; index++) {
-//            steps[index] = ...
-//        }
-//        return steps;
+        if (!isDiagonal(source, dest)) {
+            throw new WrongMoveException("Wrong move exception");
+        }
+        Cell[] steps = new Cell[Math.abs(source.x - dest.x)];
+        int deltaX = Integer.compare(source.x, dest.x);
+        int deltaY = Integer.compare(source.y, dest.y);
+        for (int index = 0; index < steps.length; index++) {
+            steps[index] = Cell.values()[(8 * (source.x - deltaX)) + (source.y - deltaY)];
+            deltaX = deltaX > 0 ? deltaX + 1 : deltaX - 1;
+            deltaY = deltaY > 0 ? deltaY + 1 : deltaY - 1;
+        }
+        return steps;
     }
 
     public boolean isDiagonal(Cell source, Cell dest) {
-        //TODO check diagonal
-        return false;
+        boolean result = true;
+        if (Math.abs(dest.x - source.x) != Math.abs(dest.y - source.y)) {
+            result = false;
+        }
+        return result;
     }
 
     @Override
