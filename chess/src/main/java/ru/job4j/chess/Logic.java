@@ -28,19 +28,19 @@ public class Logic {
         int target = this.findBy(dest);
         if (index == -1) {
             throw new FigureNotFoundException("Figure not found");
-        } else {
-            Cell[] steps = this.figures[index].way(source, dest);
-            for (int step = 0; step < steps.length; step++) {
-                int empty = findBy(steps[step]);
-                if (empty != -1 || target != -1) {
-                    throw new CellOccupiedException("Cell occupied");
-                }
-            }
-            if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
-                rst = true;
-                this.figures[index] = this.figures[index].copy(dest);
+        }
+        Cell[] steps = this.figures[index].way(source, dest);
+        for (int step = 0; step < steps.length; step++) {
+            int empty = findBy(steps[step]);
+            if (empty != -1 || target != -1) {
+                throw new CellOccupiedException("Cell occupied");
             }
         }
+        if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
+            rst = true;
+            this.figures[index] = this.figures[index].copy(dest);
+        }
+
         return rst;
     }
 
